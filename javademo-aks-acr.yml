@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: "flux/image"
-          image: "observabilitytesting.azurecr.io/flux/image:latest"
+          image: "argocd1111acr.azurecr.io/flux/image:latest"
           ports:
           - containerPort: 80
 

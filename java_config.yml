@@ -1,0 +1,69 @@
+variables:
+- name: tag
+  value: $(Build.BuildId) #Image Tag
+
+- name: imageName
+  value: flux/image #Set Repository name/image name
+
+- name: vmImage
+  value: ubuntu-latest #Set the agent VM specification
+
+
+#javatoolInstaller----------------------------
+- name: version
+  value: 11  #Set Java verion for Build process
+
+#javaProjectBuild-----------------------------
+- name: Buildfile
+  value: pom.xml 
+
+- name: testResultsFiles
+  value: '**/surefire-reports/TEST-*.xml' #Test Results file
+
+# docker
+- name: docker_build_conn
+  value: 'ACRflux' #Artifactory Service connection name
+
+- name: docker_repo
+  value: 'flux/image' #Artifactory repository name where images are stored
+
+#Aqua Trivy
+
+#AQUA_ENTERPRISE_CONN--Description---add image name for scanning , add scanner name , scanner token which you get from aqua portal , add service connection name of aqua enterprise.
+#- name: aqua_image
+#  value: 'demo1609.jfrog.io/$(imageName):$(tag)' 
+#- name: aqua_scanner_name
+#  value: 'registry.aquasec.com/scanner-cli:6.5'
+#- name: aqua_runOptions
+#  value: '-e AQUA_TOKEN=edeba68e89fe975fec5ea66f65a427bdcebc3e36'
+#- name: aqua_enterprise_conn
+#  value: 'aqua connection'
+#- name: customFlags
+#  value: '--direct-cc'
+
+#JFrog_artifactory
+# - name: jfrog_command
+#   value: 'push' #Set Artifactory command
+
+# - name: jfrog_conn
+#   value: 'JFROG_PUSH' #Add Artifactory connection name
+
+# - name: jfrog_target_repo
+#   value: 'java' #Add Repository(in artifactory) where the images are stored
+
+# - name: JFROGimageName
+#   value: 'demo1609.jfrog.io/$(imageName):$(tag)' #Image name along with tag
+
+#HELM_update
+- name: temp_helm_name
+  value: javademo-aks-acr-tmp.yml #Set Temporary helm name
+
+- name: helm_name
+  value: javademo-aks-acr.yml #Set helm name
+
+
+
+#- name: SMTPconnectionname
+#  value: 'Email Report' #Service connection name
+#END-------------END-----------END---------END
+

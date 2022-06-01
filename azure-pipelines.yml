@@ -1,0 +1,63 @@
+trigger:
+- master
+variables:
+- template: java_config.yml
+jobs:
+- job: A1
+  pool:
+    vmImage: ${{ variables.vmImage }}
+  steps:
+
+    - task: JavaToolInstaller@0
+      inputs:
+        versionSpec: ${{ variables.version }}
+        jdkArchitectureOption: 'x64'
+        jdkSourceOption: 'PreInstalled'      
+    - task: Maven@3
+      inputs:
+        mavenPomFile: ${{ variables.Buildfile }}
+        publishJUnitResults: true
+        testResultsFiles: ${{ variables.testResultsFiles }}
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.11'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: true
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: ${{ variables.sonartask }}
+        sqMavenPluginVersionChoice: 'pom'
+        checkStyleRunAnalysis: true
+        pmdRunAnalysis: true
+        findBugsRunAnalysis: true
+
+
+    - task: Docker@2
+      inputs:
+        containerRegistry: ${{ variables.docker_build_conn }}
+        repository: ${{ variables.docker_repo }}
+        command: 'build'
+        Dockerfile: '**/Dockerfile'
+        tags: '$(tag)'
+        addPipelineData: false
+        addBaseImageData: false
+
+    - task: Docker@2
+      inputs:
+        containerRegistry: '${{ variables.docker_build_conn }}'
+        repository: '${{ variables.docker_repo }}'
+        command: 'push'
+        tags: '$(tag)'
+        addPipelineData: false
+        addBaseImageData: false
+
+    - task: CopyFiles@2
+      inputs:
+        Contents: ${{ variables.helm_name }}
+        TargetFolder: '$(build.artifactstagingdirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(build.artifactstagingdirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+      condition: succeeded()
+    
+    
